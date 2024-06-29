@@ -1,5 +1,7 @@
+import React from "react";
 import { Hourglass } from "react-loader-spinner";
-export default function Loader() {
+
+const Loader: React.FC = () => {
   return (
     <Hourglass
       visible={true}
@@ -9,7 +11,8 @@ export default function Loader() {
       wrapperStyle={{}}
       wrapperClass=""
       colors={["#306cce", "#72a1ed"]}
-      
     />
   );
-}
+};
+
+export default Loader;

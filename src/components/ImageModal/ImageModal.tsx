@@ -1,6 +1,15 @@
+import React from "react";
 import Modal from "react-modal";
 import css from "./ImageModal.module.css";
-export default function ImageModal({ photo, modalIsOpen, modalIsClosed }) {
+import { Photo } from "../../App";
+
+ export interface ModalWindowProps {
+  photo: Photo;
+  modalIsOpen: boolean;
+  modalIsClosed: () => void;
+}
+
+const ImageModal = ({ photo, modalIsOpen, modalIsClosed }: ModalWindowProps): JSX.Element => {
   return (
     <Modal
       style={{
@@ -38,4 +47,6 @@ export default function ImageModal({ photo, modalIsOpen, modalIsClosed }) {
       )}
     </Modal>
   );
-}
+};
+
+export default ImageModal;

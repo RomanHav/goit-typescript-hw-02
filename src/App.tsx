@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import "./App.css";
 import SearchBar from "./components/SearchBar/SearchBar";
 import axios from "axios";
@@ -8,27 +8,38 @@ import Loader from "./components/Loader/Loader";
 import ErrorMessage from "./components/ErrorMessage/ErrorMessage";
 import ImageModal from "./components/ImageModal/ImageModal";
 
-function App() {
-  const [photos, setPhotos] = useState([]);
-  const [query, setQuery] = useState("");
-  const [page, setPage] = useState(1);
-  const [isLoading, setIsLoading] = useState(false);
-  const [isError, setIsError] = useState(false);
-  const [isOpenModal, setIsOpenModal] = useState(false);
-  const [image, setImage] = useState();
+export interface Photo {
+  id: string;
+  urls: {
+    small: string;
+    regular: string;
+    thumb: string;
+  };
+  alt_description: string;
+}
 
-  function openModal(currentImage) {
+const App = () => {
+  const [photos, setPhotos] = useState<Photo[]>([]);
+  const [query, setQuery] = useState<string>("");
+  const [page, setPage] = useState<number>(1);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isError, setIsError] = useState<boolean>(false);
+  const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
+  const [image, setImage] = useState<Photo | null>(null);
+
+  const openModal = (currentImage: Photo): void => {
     setIsOpenModal(true);
     setImage(currentImage);
-  }
-  function closeModal() {
-    setIsOpenModal(false);
-  }
+  };
 
-  const fetchPhotos = async (searchQuery, pageNumber) => {
-    setIsLoading(true); // Start loading
+  const closeModal = (): void => {
+    setIsOpenModal(false);
+  };
+
+  const fetchPhotos = async (searchQuery: string, pageNumber: number): Promise<Photo[]> => {
+    setIsLoading(true);
     try {
-      const response = await axios.get(
+      const response = await axios.get<{ results: Photo[] }>(
         `https://api.unsplash.com/search/photos?page=${pageNumber}&per_page=15&query=${searchQuery}&client_id=YYfT46HjtTb7FYrYCVeo_X-b5wPWO9fckoMc85xYKGg`
       );
       return response.data.results;
@@ -42,19 +53,19 @@ function App() {
 
   useEffect(() => {
     const body = document.querySelector("body");
-    isOpenModal
-      ? (body.style.overflow = "hidden")
-      : (body.style.overflow = "auto");
+    if (body) {
+      body.style.overflow = isOpenModal ? "hidden" : "auto";
+    }
   }, [isOpenModal]);
 
-  const handleSearch = async (searchQuery) => {
+  const handleSearch = async (searchQuery: string): Promise<void> => {
     setQuery(searchQuery);
     setPage(1);
     const newPhotos = await fetchPhotos(searchQuery, 1);
     setPhotos(newPhotos);
   };
 
-  const loadMore = async () => {
+  const loadMore = async (): Promise<void> => {
     const nextPage = page + 1;
     setPage(nextPage);
     const newPhotos = await fetchPhotos(query, nextPage);
@@ -70,14 +81,15 @@ function App() {
       {photos.length > 0 && !isLoading && <LoadMoreBtn click={loadMore} />}
       {isLoading && <Loader />}
       {isError && <ErrorMessage />}
-
-      <ImageModal
-        photo={image}
-        modalIsOpen={isOpenModal}
-        modalIsClosed={closeModal}
-      />
+      {image && (
+        <ImageModal
+          photo={image}
+          modalIsOpen={isOpenModal}
+          modalIsClosed={closeModal}
+        />
+      )}
     </div>
   );
-}
+};
 
 export default App;

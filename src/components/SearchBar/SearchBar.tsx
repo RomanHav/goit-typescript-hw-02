@@ -1,11 +1,15 @@
-import { useState } from "react";
+import React, { FormEvent, ChangeEvent, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import css from "./SearchBar.module.css";
 
-export default function SearchBar({ onSubmit }) {
-  const [search, setSearch] = useState("");
+interface Submition {
+  onSubmit: (value: string) => void;
+}
 
-  const handleSubmit = (event) => {
+const SearchBar = ({ onSubmit }: Submition) => {
+  const [search, setSearch] = useState<string>("");
+
+  const handleSubmit = (event: FormEvent) => {
     event.preventDefault();
     if (search.trim() === "") {
       toast("Field must be fulfilled");
@@ -15,7 +19,7 @@ export default function SearchBar({ onSubmit }) {
     setSearch("");
   };
 
-  const handleChange = (event) => {
+  const handleChange = (event: ChangeEvent<HTMLInputElement>): void => {
     setSearch(event.target.value);
   };
 
@@ -36,4 +40,6 @@ export default function SearchBar({ onSubmit }) {
       <Toaster />
     </header>
   );
-}
+};
+
+export default SearchBar;
