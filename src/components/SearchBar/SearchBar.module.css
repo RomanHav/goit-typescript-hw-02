@@ -1,0 +1,19 @@
+.headerForm {
+    margin-bottom: 40px;
+}
+.headerForm form {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    justify-content: center;
+}
+.headerForm input {
+    padding: 10px;
+    width: 200px;
+    border-radius: 10px;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    -ms-border-radius: 10px;
+    -o-border-radius: 10px;
+    border: 0;
+}
